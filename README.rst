@@ -1,7 +1,6 @@
 ALEX17 Diurnal Cycles Benchmark: A Large Domain in Complex Terrain
-===========================
-`Javier Sanz Rodrigo <mailto:jsrodrigo@cener.com>`_, `Pawel Gancarski <mailto:pgancarski@cener.com>`_, `Pedro Alvim De Azevedo Santos <mailto:paas@dtu.dk>`_
-
+==================================================================
+`Javier Sanz Rodrigo <mailto:javier.sanz@siemensgamesa.com>`_, `Roberto Chávez <mailto:Roberto.Chavez@ul.com>`_, `Pedro Alvim De Azevedo Santos <mailto:pedro.santos@iwes.fraunhofer.de>`_
 
 Background 
 ----------
@@ -33,25 +32,11 @@ Benchmark input data and simulation data is published open-access in the followi
 
 Installation
 ------------
-We use Jupyter notebooks based on Python 3. We recomend the `Anaconda distribution <https://www.anaconda.com/distribution/>`_ to install python. The libraries used by the notebooks can be installed with 
-
-.. code:: bash
-
-	$ pip install -r requirements.txt
-
-Benchmark participants can have access to a cloud benchmark environment at CSC's virtual research environment. To this end:
-
-1. Ask for an account to `Javier Sanz Rodrigo <mailto:jsrodrigo@cener.com>`_. 
-2. Log in at `CSC notebooks <https://notebooks.csc.fi/#/account>`_ through *Click here for alternate login*. 
-3. Click *Join Group* and use the following code: **alex17-xmcp2**
-4. Go to the `dashboard <https://notebooks.csc.fi/#/admin-dashboard>`_ and lauch a test notebook. It will take a few minutes to fetch all the data from the b2drop repository. Then it will give you an URL to the Jupyter instance. 
-
-Please note that the instance will expire eventually and will not host your data. Any data or changes you have made during the session have to be downloaded is you want to keep them. 
-
+We use Jupyter notebooks based on Python 3. We recomend the `Anaconda distribution <https://www.anaconda.com/distribution/>`_ to install python. You can find a list of library dependencies in :code:`requirements.txt`
 
 Output data converter
 ---------------------
-A script is provided to make the data conversion process as easy as possible to comply with the requested data formatting and variable name conventions. The standard way of using the scripts consists of the following steps:
+A script is provided to make facilitate the output data conversion process and comply with the requested data formatting and variable name conventions. The standard way of using the scripts consists of the following steps:
 
 1. Update the ``config/Marinet.yaml`` file.
 2. Edit the ``runALEX17.py`` file, making sure to provide it with functions that can extract your data for a given point and column.
@@ -64,7 +49,7 @@ A script is provided to make the data conversion process as easy as possible to 
 
 	The expected output from the functions are labeled, xarray tables. An example of how to define those functions can be found here `get_point <https://github.com/iat-cener/alex17/blob/5f1fc540065f1e4b23114e42930fa5f5c7ca4965/lib/WrfReader.py#L322>`_ and `get_column <https://github.com/iat-cener/alex17/blob/5f1fc540065f1e4b23114e42930fa5f5c7ca4965/lib/WrfReader.py#L332>`_. If you don't feel confortable with xarrays, you can try hacking the script and copy the numbers directly to the generated output files `file1 <https://github.com/iat-cener/alex17/blob/5f1fc540065f1e4b23114e42930fa5f5c7ca4965/lib/alex17_functions.py#L82>`_, `file2 <https://github.com/iat-cener/alex17/blob/5f1fc540065f1e4b23114e42930fa5f5c7ca4965/lib/alex17_functions.py#L130>`_, `file3 <https://github.com/iat-cener/alex17/blob/5f1fc540065f1e4b23114e42930fa5f5c7ca4965/lib/alex17_functions.py#L174>`_. This approach is not advised as it will be prone to errors and most likelly it will be more time consuming than understanding the suggested approach).
 
-3. Finally, edit your [simID] representing your simulation identifier (should be provided to you).
+3. Finally, edit your [simID] representing your simulation identifier (alex17_*, where * is a number of your choice).
 
 Citation
 --------
@@ -74,9 +59,8 @@ You can cite the github repo in the following way:
 
 License
 -------
-Copyright 2020 CENER
 Licensed under the GNU General Public License v3.0
 
 Acknowledgements
 ----------------
-The authors would like to thank the benchmark participants for their simulations and in-kind support in fine-tuning the benchmark set-up and evaluation methodology. The benchmark is run under the umbrella of IEA-Wind Task 31 with support from the H2020-MARINET2 project, where it is used as a pilot case-study for its virtual research environment. 
+The authors would like to thank the benchmark participants for their simulations and in-kind support in fine-tuning the benchmark set-up and evaluation methodology. The benchmark is run under the umbrella of IEA-Wind Task 31 with support from the H2020-MARINET2 project, where it was used as a pilot of the virtual research environment. 
