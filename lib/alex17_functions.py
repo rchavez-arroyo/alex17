@@ -8,6 +8,7 @@ import math
 import rasterio as rio
 import matplotlib.pyplot as plt 
 from matplotlib.colors import LightSource
+from scipy import stats
 
 from lib.variables_dictionary.variables import Variables
 from lib.variables_dictionary.variables import nc_global_attributes_from_yaml
@@ -86,6 +87,70 @@ def events_qois_vs_masts_table(events,masts_obs,height):
                                                                         time = slice(events[e][0],events[e][1])).std()
     return df 
 
+def WDzL_bins(x,y,ts,statistic,bins,bins_label,plot = False):
+        """
+        Compute and plot distribution of samples per bin
+        Inputs:
+            - x: time-series of wind direction
+            - y: time-series of stability
+            - ts: time-series of values
+            - statistic: which statistic to compute per bin
+            - bins: bin limits for x and y
+            - bins_label: bin labels
+            - plot: whether to plot the distribution or not
+        Outputs: 
+            - N_WDzL: dataframe wind bin sample count per wd and zL
+            - binmap: list of timestamp indices to samples in each bin (wd,zL)
+        """
+        
+        Nwd, NzL = [len(dim) for dim in bins_label]
+        WDbins_label, zLbins_label = bins_label
+        WDbins, zLbins = bins
+        x = x.values.flatten()
+        x[x>WDbins[-1]] = x[x>WDbins[-1]]-360
+        y = y.values.flatten()
+        statistic, xedges, yedges, binnumber = stats.binned_statistic_2d(x, y, ts.values.flatten(), 
+                                                                        statistic=statistic, 
+                                                                        bins=bins, expand_binnumbers = True)
+        N_WDzL = pd.DataFrame(statistic, index=WDbins_label, columns=zLbins_label)
+
+        binmap = np.empty((Nwd, NzL), dtype = object)
+        for i_wd in range(Nwd):
+            for i_zL in range(NzL):
+                binmap[i_wd,i_zL] = ts[np.logical_and(binnumber[0,:] == i_wd+1, binnumber[1,:] == i_zL+1)].time.values
+
+        if plot:
+            N_zL = np.sum(N_WDzL, axis = 0).rename('pdf')
+            N_WD = np.sum(N_WDzL, axis = 1).rename('pdf')
+            Nnorm_WDzL = N_WDzL.div(N_WD, axis=0)
+            NzL = len(bins_label[1])
+
+            f1 = plt.figure(figsize = (18,8))
+            cmap = plt.get_cmap('bwr')
+            zLcolors = np.flipud(cmap(np.linspace(0.,NzL,NzL)/NzL))
+            ax1=Nnorm_WDzL.plot.bar(stacked=True, color=zLcolors, align='center', width=1.0, legend=False, 
+                                    rot=90, use_index = False, edgecolor='grey')
+            ax2=(N_WD/N_WD.sum()).plot(ax=ax1, secondary_y=True, style='k',legend=False, rot=90, use_index = False);
+            ax2.set_xticklabels(WDbins_label)
+            #ax1.set_title('Wind direction vs stability')
+            ax1.set_ylabel('$pdf_{norm}$($z/L_{ref}$)')
+            ax2.set_ylabel('$pdf$($WD_{ref}$)', rotation=-90, labelpad=15)
+            ax1.set_yticks(np.linspace(0,1.,6))
+            ax1.set_ylim([0,1.])
+            ax2.set_yticks(np.linspace(0,0.2,6))
+
+            h1, l1 = ax1.get_legend_handles_labels()
+            h2, l2 = ax2.get_legend_handles_labels()
+            plt.legend(h1+h2, l1+l2, bbox_to_anchor=(1.3, 1))
+
+            #cellText = N_WDzL.T.astype(str).values.tolist() # add table to bar plot
+            #the_table = plt.table(cellText=cellText,
+            #                      rowLabels=zLbins_label,
+            #                      rowColours=zLcolors,
+            #                      colLabels=WDbins_label,
+            #                      loc='bottom')
+
+        return N_WDzL, binmap
                 
 def mast_sims_vs_obs_timeseries_plot(mast, h, masts_obs, masts_sim, sims, datefrom, dateto, events):
     fig, (ax1,ax2,ax3,ax4,ax5,ax6) = plt.subplots(6,1,figsize = (14,14), sharex = True)
