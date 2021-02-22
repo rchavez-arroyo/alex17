@@ -32,7 +32,7 @@ Benchmark input data and simulation data is published open-access in the followi
 
 Installation
 ------------
-We use Jupyter notebooks based on Python 3. We recomend the `Anaconda distribution <https://www.anaconda.com/distribution/>`_ to install python. You can find a list of library dependencies in :code:`requirements.txt`
+We use Jupyter notebooks based on Python 3. We recomend the `Anaconda distribution <https://www.anaconda.com/distribution/>`_ to install python. You can find a list of library dependencies in :code:`requirements.txt` to build your local environment.
 
 Output data converter
 ---------------------
